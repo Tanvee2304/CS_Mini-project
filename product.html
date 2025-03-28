@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Product Details</h2>
+    <div id="product-info">
+        <p><strong>Name:</strong> {{ product.name }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+    </div>
+</body>
+</html>
