@@ -4,26 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <h1>Search Products</h1>
-    
-    <form action="/search" method="POST">
-        <input type="text" name="query" placeholder="Enter product name" required>
-        <button type="submit">Search</button>
-    </form>
-
-    {% if results is not none %}  <!-- Only display results section if a search was made -->
-        <h2>Search Results:</h2>
-        {% if results %}
-            <ul>
-                {% for product in results %}
-                    <li>{{ product[1] }} - ${{ product[3] }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No results found.</p>
+<body class="search-page">
+    <div class="search-container">
+        <h1>Search Products</h1>
+        
+        <form action="/search" method="POST">
+            <input type="text" name="query" placeholder="Enter product name" required>
+            <button type="submit">Search</button>
+        </form>
+        <br>
+        {% if product_details is not none %}
+            <h2>Product Details:</h2>
+            {% if product_details %}
+                <ul>
+                    {% for product in product_details %}
+                        <li>
+                            <strong>Name:</strong> {{ product[1] }}<br>
+                            <strong>Description:</strong> {{ product[3] }}<br>
+                            <strong>Price:</strong> ${{ product[2] }}
+                        </li>
+                        <br>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No products found.</p>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 </body>
 </html>
