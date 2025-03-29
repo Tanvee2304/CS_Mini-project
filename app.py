@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template
-import mysql.connector
+from flask import Flask, request, render_template # type: ignore
+import mysql.connector # type: ignore
 
 app = Flask(__name__)
 
@@ -23,8 +23,11 @@ def login():
         password = request.form['password']
 
         cursor = db.cursor(dictionary=True)
-        # 🚨 SQL Injection Vulnerable Query
+        
+        # Print the query to check input
         query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+        print("Executing Query:", query)  # 👉 Check the console
+
         cursor.execute(query)
         user = cursor.fetchone()
 
@@ -37,16 +40,19 @@ def login():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    results = None
+    product_details = None
+
     if request.method == 'POST':
         search_query = request.form['query']
-        
-        # ❌ Intentionally Vulnerable SQL Query (for SQL Injection testing)
+
+        # Fetch matching product details
         query = f"SELECT * FROM products WHERE name LIKE '%{search_query}%'"
         cursor.execute(query)
-        results = cursor.fetchall()
+        product_details = cursor.fetchall()  # Fetch all matching products
 
-    return render_template('search.html', results=results)
+    return render_template("search.html", product_details=product_details)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
