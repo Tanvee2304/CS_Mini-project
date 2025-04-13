@@ -1,0 +1,158 @@
+Enter password: ****
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 21
+Server version: 8.0.38 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> -- Create database
+mysql> CREATE DATABASE demo_site;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE demo_site;
+Database changed
+mysql>
+mysql> -- Drop existing tables if they exist (for a clean start)
+mysql> DROP TABLE IF EXISTS users, products, orders, order_items;
+Query OK, 0 rows affected, 4 warnings (0.01 sec)
+
+mysql>
+mysql> -- 1. Create users table
+mysql> CREATE TABLE users (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     username VARCHAR(50),
+    ->     password VARCHAR(50),
+    ->     email VARCHAR(100),
+    ->     role VARCHAR(20), -- customer, admin, seller
+    ->     address VARCHAR(255),
+    ->     phone VARCHAR(15),
+    ->     last_login TIMESTAMP
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> -- 2. Create products table
+mysql> CREATE TABLE products (
+    ->     product_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100),
+    ->     description VARCHAR(255),
+    ->     price FLOAT,
+    ->     stock INT
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+mysql> -- 3. Create orders table
+mysql> CREATE TABLE orders (
+    ->     order_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     user_id INT,
+    ->     total_amount FLOAT,
+    ->     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ->     status VARCHAR(20), -- Pending, Shipped, Delivered
+    ->     FOREIGN KEY (user_id) REFERENCES users(id)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>
+mysql> -- 4. Create order_items table
+mysql> CREATE TABLE order_items (
+    ->     order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     order_id INT,
+    ->     product_id INT,
+    ->     quantity INT,
+    ->     price FLOAT,
+    ->     FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    ->     FOREIGN KEY (product_id) REFERENCES products(product_id)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql>
+mysql> -- 5. Insert sample data into users
+mysql> INSERT INTO users (username, password, email, role, address, phone, last_login) VALUES
+    -> ('alice', 'password1', 'alice@example.com', 'customer', '123 Wonderland Ave', '1234567890', NOW()),
+    -> ('bob', 'password2', 'bob@example.com', 'customer', '456 Nowhere St', '9876543210', NOW()),
+    -> ('chris', 'password3', 'chris@example.com', 'seller', '789 Seller Lane', '5555555555', NOW()),
+    -> ('dylan', 'password4', 'dylan@example.com', 'admin', 'Admin HQ', '9999999999', NOW());
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- 6. Insert sample data into products
+mysql> INSERT INTO products (name, description, price, stock) VALUES
+    -> ('Smartphone', 'High-end smartphone with amazing features', 699.99, 50),
+    -> ('Laptop', 'Powerful laptop for professionals', 1200.00, 30),
+    -> ('Headphones', 'Noise-cancelling over-ear headphones', 150.00, 100),
+    -> ('Smartwatch', 'Feature-packed smartwatch', 199.99, 75);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- 7. Insert sample data into orders
+mysql> INSERT INTO orders (user_id, total_amount, status) VALUES
+    -> (1, 849.99, 'Delivered'),
+    -> (2, 150.00, 'Shipped'),
+    -> (1, 1200.00, 'Pending');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- 8. Insert sample data into order_items
+mysql> INSERT INTO order_items (order_id, product_id, quantity, price) VALUES
+    -> (1, 1, 1, 699.99),
+    -> (1, 3, 1, 150.00),
+    -> (2, 3, 1, 150.00),
+    -> (3, 2, 1, 1200.00);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> SELECT users.username, users.email, users.address, users.phone,
+    ->        orders.total_amount, orders.status, products.name AS product_name,
+    ->        order_items.quantity, order_items.price
+    -> FROM users
+    -> JOIN orders ON users.id = orders.user_id
+    -> JOIN order_items ON orders.order_id = order_items.order_id
+    -> JOIN products ON order_items.product_id = products.product_id;
++----------+-------------------+--------------------+------------+--------------+-----------+--------------+----------+--------+
+| username | email             | address            | phone      | total_amount | status    | product_name | quantity | price  |
++----------+-------------------+--------------------+------------+--------------+-----------+--------------+----------+--------+
+| alice    | alice@example.com | 123 Wonderland Ave | 1234567890 |       849.99 | Delivered | Smartphone   |        1 | 699.99 |
+| alice    | alice@example.com | 123 Wonderland Ave | 1234567890 |       849.99 | Delivered | Headphones   |        1 |    150 |
+| bob      | bob@example.com   | 456 Nowhere St     | 9876543210 |          150 | Shipped   | Headphones   |        1 |    150 |
+| alice    | alice@example.com | 123 Wonderland Ave | 1234567890 |         1200 | Pending   | Laptop       |        1 |   1200 |
++----------+-------------------+--------------------+------------+--------------+-----------+--------------+----------+--------+
+4 rows in set (0.00 sec)
+
+mysql> ALTER TABLE products ADD COLUMN image_url VARCHAR(255);
+Query OK, 0 rows affected (0.10 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> update products
+    -> set image_url = 'images/smartphone.png'
+    -> where name = 'Smartphone';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update products
+    -> set image_url = 'images/laptop.jpeg'
+    -> where name = 'Laptop';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update products
+    -> set image_url = 'images/headphones.jpeg'
+    -> where name = 'Headphones';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update products
+    -> set image_url = 'images/smartwatch.jpeg'
+    -> where name = 'Smartwatch';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0

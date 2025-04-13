@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
+    <title>Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -12,6 +12,10 @@
         <a href="{{ url_for('search_page') }}">Search</a>
         <a href="{{ url_for('logout') }}">Logout</a>
     </nav>
+    <div class="home-header">
+        <h1>Welcome to the Store</h1>
+        <p>Browse and buy amazing products!</p>
+    </div>
     <div class="product-container">
         <div class="product-card">
             <img src="{{ url_for('static', filename='images/smartphone.png') }}" alt="Smartphone">
@@ -26,19 +30,17 @@
             <button>Add to Cart</button>
         </div>
         <div class="product-card">
-            <img src="{{ url_for('static', filename='images/laptop.jpeg') }}" alt="Headphones">
+            <img src="{{ url_for('static', filename='images/headphones.jpeg') }}" alt="Headphones">
             <h3>Headphones</h3>
             <p>Noise-cancelling over-ear headphoness</p><br>
             <button>Add to Cart</button>
         </div>
         <div class="product-card">
-            <img src="{{ url_for('static', filename='images/laptop.jpeg') }}" alt="Smartwatch">
+            <img src="{{ url_for('static', filename='images/smartwatch.jpeg') }}" alt="Smartwatch">
             <h3>Smartwatch</h3>
             <p>Feature-packed smartwatch</p><br>
             <button>Add to Cart</button>
         </div>
-        <!-- Add more products here -->
-    </div>
     <footer>
         <p>&copy; 2025 Your Company. All rights reserved.</p>
     </footer>

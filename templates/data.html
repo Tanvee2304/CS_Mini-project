@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="data-page">
+    <div class="data-container">
+        <h3>Welcome back!</h3><br>
+        <p> Previous Transactions: </p>
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.username }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.address }}</td>
+                <td>{{ row.phone }}</td>
+                <td>{{ row.total_amount }}</td>
+                <td>{{ row.status }}</td>
+                <td>{{ row.product_name }}</td>
+                <td>{{ row.quantity }}</td>
+                <td>{{ row.price }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <a href="/logout" class="data-btn">Logout</a>
+    </div>
+</body>
+</html>

@@ -2,35 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Products</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="search-page">
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('search_page') }}">Search</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+
     <div class="search-container">
-        <h1>Search Products</h1>
-        
-        <form action="/search" method="POST">
-            <input type="text" name="query" placeholder="Enter product name" required>
+        <h2>Search Products</h2>
+        <form action="{{ url_for('search_page') }}" method="get">
+            <input type="text" name="query" placeholder="Search for products..." required>
             <button type="submit">Search</button>
         </form>
-        <br>
-        {% if product_details is not none %}
-            <h2>Product Details:</h2>
-            {% if product_details %}
-                <ul>
-                    {% for product in product_details %}
-                        <li>
-                            <strong>Name:</strong> {{ product[1] }}<br>
-                            <strong>Description:</strong> {{ product[3] }}<br>
-                            <strong>Price:</strong> ${{ product[2] }}
-                        </li>
-                        <br>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No products found.</p>
-            {% endif %}
+
+        {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <!-- Correct the image path to use product[5] -->
+                    <img src="{{ url_for('static', filename=product[5]) }}">
+                    <h3>{{ product[1] }}</h3> <!-- Product Name -->
+                    <p>{{ product[2] }}</p>   <!-- Product Description -->
+                    <p class="price">$ {{ product[3] }}</p> <!-- Product Price -->
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <br><br>
+            <p>No products found.</p>
         {% endif %}
     </div>
 </body>
